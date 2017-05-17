@@ -1,0 +1,48 @@
+---
+name: trialapp
+up:
+- homebrew:
+  - openssl
+  - shopify/shopify/mysql-client:
+      or:
+      - mysql
+      conflicts:
+      - mysql-connector-c
+  - phantomjs
+- ruby: 2.3.1
+- bundler
+- railgun
+- database:
+    bootstrap: bin/rake db:setup ; bin/rake db:test:prepare
+    migrate: bin/rake db:migrate db:test:prepare
+    host: trialapp.railgun
+    user: root
+    password: ''
+    database: trialapp_development
+commands:
+  console:
+    desc: start a rails console
+    run: bin/rails console
+  server:
+    desc: start a rails server
+    run: bin/rails server -b 192.168.64.1 -p 40174
+  test:
+    syntax:
+      argument: file
+      optional: args...
+    desc: run tests
+    run: bin/rake test
+railgun:
+  image: dev:railgun-common-services-0.2.x
+  services:
+    mysql: 3306
+    nginx: 80
+  ip_address: 192.168.64.40
+  memory: 2G
+  cores: 2
+  disk: 2G
+  proxy:
+    trialapp.myshopify.io: 40174
+open:
+  My Application: https://trialapp.myshopify.io
+  trialapp: https://trialapp.myshopify.io
